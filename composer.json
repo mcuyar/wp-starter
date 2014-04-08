@@ -1,0 +1,25 @@
+{
+    "name": "dangrill/framework",
+    "description": "Package/Framework to build and deploy wordpress apps",
+    "authors": [
+        {
+            "name": "Matthew Cuyar",
+            "email": "matt@enctypeapparel.com"
+        }
+    ],
+    "repositories": [
+    ],
+    "require": {
+    	"php": ">=5.4.0",
+    	"johnpbloch/wordpress": "dev-master"
+    },
+    "autoload": {
+    },
+    "config": {
+        "preferred-install": "dist"
+    },
+    "extra": {
+    	"wordpress-install-dir": "wp"
+    },
+    "minimum-stability": "stable"
+}

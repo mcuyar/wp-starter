@@ -1,0 +1,11 @@
+## Local OS files
+.DS_Store
+
+## Composer
+composer.lock
+
+## Folders
+vendor
+vendor/*
+wp
+wp/*
