@@ -7,5 +7,5 @@ composer.lock
 ## Folders
 vendor
 vendor/*
-wp
-wp/*
+public/wp
+public/wp/*

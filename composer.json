@@ -19,7 +19,13 @@
         "preferred-install": "dist"
     },
     "extra": {
-    	"wordpress-install-dir": "wp"
+    	"wordpress-install-dir": "public/wp",
+    	"installer-paths" : {
+			"public/content/plugins/{$name}" : ["type:wordpress-plugin"],
+			"public/content/mu-plugins/{$name}": ["type:wordpress-muplugin"],
+			"public/content/themes/{$name}" : ["type:wordpress-theme"],
+			"public/content/dropins/{$name}" : ["type:wordpress-dropin"]
+		}
     },
     "minimum-stability": "stable"
 }
