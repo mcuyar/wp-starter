@@ -11,12 +11,15 @@
     ],
     "require": {
     	"php": ">=5.4.0",
-    	"johnpbloch/wordpress": "dev-master"
+    	"johnpbloch/wordpress": "dev-master",
+    	"illuminate/support": "4.1.*@dev",
+    	"illuminate/container": "4.1.*@dev",
+    	"illuminate/config": "4.1.*@dev"
     },
     "autoload": {
     },
     "config": {
-        "preferred-install": "dist"
+        "preferred-install": "dist",
     },
     "extra": {
     	"wordpress-install-dir": "public/wp",
