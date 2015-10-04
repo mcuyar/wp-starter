@@ -1,0 +1,92 @@
+#--------------------------------------------
+# Basic Security
+#--------------------------------------------
+# http://codex.wordpress.org/Hardening_WordPress
+# http://wpsecure.net
+
+	# Block the wordpress include-only files.
+    RewriteEngine On
+    RewriteBase /wp/
+    RewriteRule ^wp/wp-admin/includes/ - [F,L]
+    RewriteRule !^wp/wp-includes/ - [S=3]
+    RewriteRule ^wp/wp-includes/[^/]+\.php$ - [F,L]
+    RewriteRule ^wp/wp-includes/js/tinymce/langs/.+\.php - [F,L]
+    RewriteRule ^wp/wp-includes/theme-compat/ - [F,L]
+
+	# Disable Directory Listings in this Directory and Subdirectories
+	# This will hide the files from the public unless they know direct URLs
+    Options All -Indexes
+
+	# Deny access to .htaccess
+    <Files .htaccess>
+       order allow,deny
+       deny from all
+    </Files>
+
+	# Deny access to wp-config.php
+    <Files wp-config.php>
+        order allow,deny
+        deny from all
+    </Files>
+
+	# Deny access to local-config.php
+    <Files local-config.php>
+        order allow,deny
+        deny from all
+    </Files>
+
+	# Disable the server signature
+    ServerSignature Off
+
+	# limit file uploads to 10mb (optional)
+    LimitRequestBody 10240000
+
+#--------------------------------------------
+# Whitelist user ip addresses
+#--------------------------------------------
+# Not quite sure how to implement just yet
+
+	#AuthUserFile /dev/null
+	#AuthGroupFile /dev/null
+	#AuthName “Access Control”
+	#AuthType Basic
+	#order deny,allow
+	#deny from all
+	
+	#IP address to Whitelist
+	#--------------------------------
+	#allow from 123.123.123.123
+
+#--------------------------------------------
+# Forbid proxy comment posting
+# http://wpsecure.net/secure-wordpress-advanced/
+#--------------------------------------------
+    RewriteCond %{REQUEST_METHOD} =POST
+    RewriteCond %{HTTP:VIA}%{HTTP:FORWARDED}%{HTTP:USERAGENT_VIA}%{HTTP:X_FORWARDED_FOR}%{HTTP:PROXY_CONNECTION} !^$ [OR]
+    RewriteCond %{HTTP:XPROXY_CONNECTION}%{HTTP:HTTP_PC_REMOTE_ADDR}%{HTTP:HTTP_CLIENT_IP} !^$
+    RewriteCond %{REQUEST_URI} !^/wp/(wp-login.php|wp-admin/|wp-content/plugins/|wp-includes/).* [NC]
+    RewriteRule .* - [F,NS,L]
+
+# -----------------------------------------------------------
+# php.ini Overrides
+# -----------------------------------------------------------
+    <IfModule mod_php5.c>
+        php_value upload_max_filesize 32M
+        php_value post_max_size  32M
+    </IfModule>
+
+#--------------------------------------------
+# Wordpress Pretty Permalinks
+#--------------------------------------------
+
+    # BEGIN WordPress
+    <IfModule mod_rewrite.c>
+        RewriteEngine On
+        RewriteBase /
+        RewriteRule ^index\.php$ - [L]
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteRule . /index.php [L]
+    </IfModule>
+
+# END WordPress

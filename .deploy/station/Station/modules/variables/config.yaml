@@ -1,0 +1,6 @@
+---
+classname: Variables
+
+defaults:
+  - key: APP_ENV
+    value: local
