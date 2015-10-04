@@ -20,7 +20,8 @@ class Station
     end
 
     # Configure Port Forwarding To The Box
-    config.vm.network "forwarded_port", guest: 80, host: settings["forwarded_ports"]["http"] ||= 8000
+    config.vm.network "forwarded_port", guest: 80, host: settings["forwarded_ports"]["http"] ||= 8080
+    config.vm.network "forwarded_port", guest: 443, host: settings["forwarded_ports"]["https"] ||= 8443
     config.vm.network "forwarded_port", guest: 3306, host: settings["forwarded_ports"]["mysql"] ||= 33060
     config.vm.network "forwarded_port", guest: 5432, host: settings["forwarded_ports"]["postgresql"] ||= 54320
 
@@ -49,7 +50,8 @@ class Station
 
       # run the module provisioner
       require m + "/#{basename}.rb"
-      m.sub! path, '/vagrant'
+      station_path = ENV['STATION_PATH'] ||= ''
+      m.sub! path, '/vagrant' + station_path
       @@modules[basename] = Kernel.const_get(classname).new(config, args, m)
 
     end
