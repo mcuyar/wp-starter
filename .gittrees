@@ -1,0 +1,24 @@
+# ------------------------------------------------------
+# Adding a subtree
+# ------------------------------------------------------
+# git remote add remote-name git@github.com:repo/name.git
+# git subtree add --prefix=path/to/subtree --squash remote-name branch
+
+# ------------------------------------------------------
+# pulling upstream changes
+# ------------------------------------------------------
+# git subtree pull --prefix=path/to/subtree --squash remote-name branch
+
+# ------------------------------------------------------
+# pushing upstream changes
+# ------------------------------------------------------
+# git subtree push --prefix=path/to/subtree --squash remote-name branch
+
+# ------------------------------------------------------
+# Git Subtrees
+# ------------------------------------------------------
+
+[subtree "station"]
+    url = git@github.com:mcuyar/station.git
+    path = .deploy/station
+    branch = master
