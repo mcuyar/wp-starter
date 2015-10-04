@@ -14,6 +14,10 @@
     	"johnpbloch/wordpress": "dev-master"
     },
     "autoload": {
+      "classmap": [],
+      "psr-4": {
+        "Services\\": "public/app/Services"
+      }
     },
     "config": {
         "preferred-install": "dist"

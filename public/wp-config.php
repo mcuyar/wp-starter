@@ -1,43 +1,61 @@
 <?php
 
-/**
- * Load database info and local development parameters
- */
+use \Services\App;
+use \Services\Url;
 
+/**
+ * Autoload composer classes
+ *
+ * @var string
+ */
+require_once __DIR__ . '/../vendor/autoload.php';
+
+/**
+ * The root public folder
+ *
+ * @var string
+ */
 $path = dirname( __FILE__ );
 
-if ( file_exists( $path . '/local-config.php' ) ) {
-	define( 'WP_LOCAL_DEV', true );
-    include( $path . '/local-config.php' );
-} else {
-	define( 'WP_LOCAL_DEV', false );
-	
-	ini_set( 'display_errors', 0 );
-	define('WP_DEBUG', false);
-}
+/**
+ * The custom application
+ *
+ * @var \Services\App
+ */
+$app = new App;
+
+/**
+ * Set the database parameters
+ */
+$table_prefix  = 'wp_';
 
 define( 'DB_NAME', getenv('DB_NAME'));
 define( 'DB_USER', getenv('DB_USER'));
 define( 'DB_PASSWORD', getenv('DB_PASSWORD'));
 define( 'DB_HOST', getenv('DB_HOST'));
-define( 'DB_CHARSET', 'utf8' );
-define( 'DB_COLLATE', '' );
 
-// ========================
-// Custom Content Directory
-// ========================
-define( 'WP_CONTENT_DIR', dirname( __FILE__ ) . '/content' );
-define( 'WP_CONTENT_URL', 'http://' . $_SERVER['HTTP_HOST'] . '/content' );
+define( 'DB_CHARSET', 'utf8' ); // You almost certainly do not want to change this
+define( 'DB_COLLATE', '' ); // You almost certainly do not want to change this
 
-// ================================================
-// You almost certainly do not want to change these
-// ================================================
+/**
+ * Memory limit
+ */
+$app->setMemoryLimit(32);
 
+/**
+ * Define the absolute path for the application core
+ */
+$app->setAppDirectory($path.'/wp/');
 
-// ==============================================================
-// Salts, for security
-// Grab these from: https://api.wordpress.org/secret-key/1.1/salt
-// ==============================================================
+/**
+ * Custom Content Directory
+ */
+$app->setContentDirectory($path.'/content');
+
+/**
+ * Salts, for security
+ * Grab these from: https://api.wordpress.org/secret-key/1.1/salt
+ */
 define('AUTH_KEY',         'zf%-.ok4k *ZT!yWo}U0%BPfwSaf6g$z?w60BSzu S@U+ckKS6[jjl>h5o|(qEm}');
 define('SECURE_AUTH_KEY',  '8%B% b;p[+X4m-0GiC<iX4|xs<;RtLgFE^FXD8Lo>3rmuN!WO;)bX!2:s@-C[WcC');
 define('LOGGED_IN_KEY',    'h-DoA+3FWV0@~ZH|:Obkr-W?9jvT5~A{|!>1o:wp!}U$ 8~IP#w:VACn3_-;{TSI');
@@ -47,52 +65,29 @@ define('SECURE_AUTH_SALT', 'OZO4t2(@p!_P{ORU GBha/VfM?X%<ktc8(oq`-+=QX2u*zwhlCz(
 define('LOGGED_IN_SALT',   'zs-!rthh+9xq@]1>d/tY3i|0tW w_TNQAYrVQFa7*QJrs hm^R+V-<nI~%WNiq.V');
 define('NONCE_SALT',       'VyUW0St|kr<>O%gc3l0@#V,w{7I157XOr)!L8ZJkCZNI.+FUdIOW1g98el$-s7FZ');
 
-// ==============================================================
-// Memory Limit 
-// ==============================================================
-define('WP_MEMORY_LIMIT', '32M');
+/**
+ * Language
+ * Leave blank for American English
+ */
+$app->setLanguage('');
 
-// ==============================================================
-// Table prefix
-// Change this if you have multiple installs in the same database
-// ==============================================================
-$table_prefix  = 'wp_';
+/**
+ * Error display
+ */
+if($app->environment() == 'local') {
+    $app->showErrors();
+} else {
+    $app->hideErrors();
+}
 
-// ================================
-// Language
-// Leave blank for American English
-// ================================
-define( 'WPLANG', '' );
+/**
+ * Load a Memcached config if we have one
+ */
+if (file_exists($path.'/memcached-'.$app->environment().'.php')) {
+    $memcached_servers = include($path.'/memcached-'.$app->environment().'.php');
+}
 
-// ===========
-// Hide errors
-// ===========
-//ini_set( 'display_errors', 0 );
-//define('WP_DEBUG', false);
-//define( 'WP_DEBUG_DISPLAY', true );
-
-// =================================================================
-// Debug mode
-// Debugging? Enable these. Can also enable them in local-config.php
-// =================================================================
-// define( 'SAVEQUERIES', true );
-// define( 'WP_DEBUG', true );
-
-// ======================================
-// Load a Memcached config if we have one
-// ======================================
-if ( file_exists( dirname( __FILE__ ) . '/memcached.php' ) )
-	$memcached_servers = include( dirname( __FILE__ ) . '/memcached.php' );
-
-// ===========================================================================================
-// This can be used to programatically set the stage when deploying (e.g. production, staging)
-// ===========================================================================================
-define( 'WP_STAGE', '%%WP_STAGE%%' );
-define( 'STAGING_DOMAIN', '%%WP_STAGING_DOMAIN%%' ); // Does magic in WP Stack to handle staging domain rewriting
-
-// ===================
-// Bootstrap WordPress
-// ===================
-if ( !defined( 'ABSPATH' ) )
-	define( 'ABSPATH', dirname( __FILE__ ) . '/wp/' );
-require_once( ABSPATH . 'wp-settings.php' );
+/**
+ * Bootstrap the wordpress core
+ */
+require_once(ABSPATH . 'wp-settings.php');
