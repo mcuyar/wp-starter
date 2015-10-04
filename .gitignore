@@ -8,3 +8,7 @@ composer.lock
 ## Folders
 vendor
 public/wp
+
+
+# Hide vagrant folder
+.vagrant

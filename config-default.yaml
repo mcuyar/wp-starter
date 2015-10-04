@@ -120,7 +120,7 @@ variables:
 
 mysql:
   databases:
-    - name: wp-starter
+    - name: wp_starter
       drop: false
 
 # ------------------------------------------------------
