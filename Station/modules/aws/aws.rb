@@ -14,10 +14,11 @@ class AmazonWebServices < StationModule
     result = ERB.new(template).result(binding)
 
     # Add template to vagrant home directory
-    shell_provision(
-      "bash #{@scripts}/awsconfig.sh \"$1\" $2",
-      [result, template_file]
-    )
+    script = %{
+      echo "#{result}" > "$(sudo -u vagrant pwd)/.aws/#{template_file}";
+    }
+
+    shell_provision(script)
 
   end
 

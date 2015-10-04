@@ -1,12 +1,9 @@
 class Commands < StationModule
 
-  def execute(command, path, variables={})
-
-    variables = Station.module('variables').get_exports(variables)
-
+  def execute(command, path)
     shell_provision(
-        "bash #{scripts}/commands.sh $1 \"$2\" \"$3\"",
-        [path, command, variables]
+        "bash #{scripts}/commands.sh $1 \"$2\"",
+        [path, command]
     )
   end
 
