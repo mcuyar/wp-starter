@@ -1,12 +1,11 @@
 class Sites < StationModule
 
-    attr_accessor :path, :installing, :variables
+    attr_accessor :path, :installing
 
     def initialize(config, args, module_path)
       super
       @path = "#{File.dirname(__FILE__)}"
       @installing = ENV.has_key?('INSTALL')
-      @variables = {}
     end
 
     def sites_available(site)
@@ -21,7 +20,7 @@ class Sites < StationModule
       end
 
       if site.has_key?("fastcgi") && !site["fastcgi"].empty?
-        fastcgi = fastcgi.deep_merge(site["fastcgi"])
+          fastcgi = fastcgi.deep_merge(site["fastcgi"])
       end
 
       # compile php value overrides
@@ -36,23 +35,9 @@ class Sites < StationModule
       end
 
       # add environment variables
-
       variables = args["defaults"]["variables"] ||= {}
       if site.has_key?("variables") && !site["variables"].empty?
         variables = variables.deep_merge(site["variables"])
-      end
-      @variables = variables
-
-      if site.has_key?('dotenv') && site["dotenv"] === true
-
-        template = File.read(path + "/templates/dotenv-array.erb")
-        result = ERB.new(template, nil, '>').result(binding)
-
-        shell_provision(
-          "bash #{@scripts}/dotenv.sh $1 \"$2\"",
-          [site.find?('root', site["to"]) + '/.env.local.php', result]
-        )
-
       end
 
       # Create the server template
@@ -108,23 +93,21 @@ class Sites < StationModule
 
   def commands_exec(commands, path)
 
-    path = commands.find?('path', path)
-
     if installing
       # install commands
       commands.find?('install', []).each do |cmd|
-        Station.module('commands').execute(cmd, path, @variables)
+        Station.module('commands').execute(cmd, path)
       end
     else
       # update commands
       commands.find?('update', []).each do |cmd|
-        Station.module('commands').execute(cmd, path, @variables)
+        Station.module('commands').execute(cmd, path)
       end
     end
 
     # always commands
     commands.find?('always', []).each do |cmd|
-      Station.module('commands').execute(cmd, path, @variables)
+      Station.module('commands').execute(cmd, path)
     end
 
   end
@@ -167,9 +150,6 @@ class Sites < StationModule
 
       # Add git config variables
       Station.module('git-config').fill(site.find?('git-config', {},), false, base_path)
-
-      # Add ssl cert
-      Station.module('ssl').generate(site["map"], {})
 
     end
 
