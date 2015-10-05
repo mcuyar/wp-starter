@@ -16,7 +16,8 @@
     "autoload": {
       "classmap": [],
       "psr-4": {
-        "Services\\": "public/app/Services"
+        "Services\\": "public/app/Services",
+        "Foundation\\": "public/app/Foundation"
       }
     },
     "config": {

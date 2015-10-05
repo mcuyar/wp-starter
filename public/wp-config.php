@@ -1,12 +1,10 @@
 <?php
 
-use \Services\App;
+use \Foundation\App;
 use \Services\Url;
 
 /**
  * Autoload composer classes
- *
- * @var string
  */
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -18,16 +16,9 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $path = dirname( __FILE__ );
 
 /**
- * The custom application
- *
- * @var \Services\App
- */
-$app = new App;
-
-/**
  * Set the database parameters
  */
-$table_prefix  = 'wp_';
+$table_prefix  = 'xBa3_';
 
 define( 'DB_NAME', getenv('DB_NAME'));
 define( 'DB_USER', getenv('DB_USER'));
@@ -40,17 +31,17 @@ define( 'DB_COLLATE', '' ); // You almost certainly do not want to change this
 /**
  * Memory limit
  */
-$app->setMemoryLimit(32);
+App::config()->setMemoryLimit(32);
 
 /**
  * Define the absolute path for the application core
  */
-$app->setAppDirectory($path.'/wp/');
+App::config()->setAppDirectory($path.'/wp/');
 
 /**
  * Custom Content Directory
  */
-$app->setContentDirectory($path.'/content');
+App::config()->setContentDirectory($path.'/content');
 
 /**
  * Salts, for security
@@ -69,22 +60,30 @@ define('NONCE_SALT',       'VyUW0St|kr<>O%gc3l0@#V,w{7I157XOr)!L8ZJkCZNI.+FUdIOW
  * Language
  * Leave blank for American English
  */
-$app->setLanguage('');
+App::config()->setLanguage('');
 
 /**
  * Error display
  */
-if($app->environment() == 'local') {
-    $app->showErrors();
+if(App::environment() == 'local') {
+    App::showErrors();
 } else {
-    $app->hideErrors();
+    App::hideErrors();
+}
+
+/**
+ * Secure login and Admin sections
+ * if available
+ */
+if(Url::isSecure()) {
+    App::forceSSLAdmin();
 }
 
 /**
  * Load a Memcached config if we have one
  */
-if (file_exists($path.'/memcached-'.$app->environment().'.php')) {
-    $memcached_servers = include($path.'/memcached-'.$app->environment().'.php');
+if (file_exists($path.'/memcached-'.App::environment().'.php')) {
+    $memcached_servers = include($path.'/memcached-'.App::environment().'.php');
 }
 
 /**

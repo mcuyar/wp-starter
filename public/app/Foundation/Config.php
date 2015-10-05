@@ -1,16 +1,8 @@
-<?php namespace Services;
+<?php namespace Foundation;
 
-class App {
+use Services\Url;
 
-    /**
-     * Get the current app environment
-     *
-     * @return string
-     */
-    public static function environment()
-    {
-        return getenv('APP_ENV') ?: 'production';
-    }
+class Config {
 
     /**
      * Set the applications core directory
@@ -76,28 +68,6 @@ class App {
     }
 
     /**
-     * Hide server errors and debug
-     */
-    public function hideErrors()
-    {
-        ini_set('display_errors', 0);
-        $this->define('SAVEQUERIES', false);
-        $this->define('WP_DEBUG', false);
-        $this->define('WP_DEBUG_DISPLAY', true);
-    }
-
-    /**
-     * Show server errors and debug errors
-     */
-    public function showErrors()
-    {
-        ini_set('display_errors', 1);
-        $this->define('SAVEQUERIES', true);
-        $this->define('WP_DEBUG', true);
-        $this->define('WP_DEBUG_DISPLAY', true);
-    }
-
-    /**
      * Load and require a file starting
      * from the base application directory
      *
@@ -107,6 +77,7 @@ class App {
     {
         $path = $file ? '/' . ltrim($file, '/') : '';
         require_once($this->getAppDirectory() . $path);
+
     }
 
     /**
@@ -121,4 +92,5 @@ class App {
             define($name, $value);
         }
     }
+
 }
