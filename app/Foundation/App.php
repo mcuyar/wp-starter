@@ -34,7 +34,8 @@ class App {
     public static function instance()
     {
         if (is_null(static::$instance)) {
-            static::$instance = new static(new Config);
+            $params = include(__DIR__ .'/../config/app.php');
+            static::$instance = new static(new Config($params));
         }
 
         return static::$instance;
@@ -58,6 +59,17 @@ class App {
     public static function config()
     {
         return static::instance()->config;
+    }
+
+    public static function init()
+    {
+        $config = static::config();
+
+        foreach($config->params() as $constant => $value) {
+            if(!is_null($value)) {
+                $config->define($constant, $value);
+            }
+        }
     }
 
     /**
@@ -86,11 +98,4 @@ class App {
         $config->define('WP_DEBUG_DISPLAY', true);
     }
 
-    public static function forceSSLAdmin()
-    {
-        $config = static::config();
-
-        $config->define('FORCE_SSL_ADMIN', true);
-        $config->define('FORCE_SSL_LOGIN', true);
-    }
 }
