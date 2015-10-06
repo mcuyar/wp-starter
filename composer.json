@@ -11,13 +11,16 @@
     ],
     "require": {
     	"php": ">=5.4.0",
-    	"johnpbloch/wordpress": "dev-master"
+    	"johnpbloch/wordpress": "dev-master",
+    	"illuminate/support": "4.1.*@dev",
+    	"illuminate/container": "4.1.*@dev",
+    	"illuminate/config": "4.1.*@dev"
     },
     "autoload": {
       "classmap": [],
       "psr-4": {
-        "Services\\": "public/app/Services",
-        "Foundation\\": "public/app/Foundation"
+        "Services\\": "app/Services",
+        "Foundation\\": "app/Foundation"
       }
     },
     "config": {

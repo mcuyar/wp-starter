@@ -4,6 +4,13 @@ use Services\Url;
 
 class Config {
 
+    protected $params;
+
+    public function __construct(array $params)
+    {
+        $this->params = $params;
+    }
+
     /**
      * Set the applications core directory
      *
@@ -22,36 +29,6 @@ class Config {
     public function getAppDirectory()
     {
         return ABSPATH;
-    }
-
-    /**
-     * Limit the memory for the application
-     *
-     * @param $limit
-     */
-    public function setMemoryLimit($limit)
-    {
-        $this->define('WP_MEMORY_LIMIT', $limit.'M');
-    }
-
-    /**
-     * Get the memory limit of the application
-     *
-     * @return string
-     */
-    public function getMemoryLimit()
-    {
-        return WP_MEMORY_LIMIT;
-    }
-
-    /**
-     * Set the applications language
-     *
-     * @param string $lang
-     */
-    public function setLanguage($lang = '')
-    {
-        $this->define( 'WPLANG', $lang);
     }
 
     /**
@@ -78,6 +55,16 @@ class Config {
         $path = $file ? '/' . ltrim($file, '/') : '';
         require_once($this->getAppDirectory() . $path);
 
+    }
+
+    public function params()
+    {
+        return $this->params;
+    }
+
+    public function get($key, $default = null)
+    {
+        return array_key_exists($key, $this->params) ? $this->params[$key] : $default;
     }
 
     /**
