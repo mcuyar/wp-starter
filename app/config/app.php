@@ -85,7 +85,7 @@ return [
 	|
 	| The 'WPMU_PLUGIN_URL' Constant will be automatically
 	*/
-    'WPMU_PLUGIN_DIR' => realpath(__DIR__.'/../../plugins'),
+    'WPMU_PLUGIN_DIR' => null,
 
     /*
 	|--------------------------------------------------------------------------
