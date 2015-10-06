@@ -1,0 +1,147 @@
+---
+# ------------------------------------------------------
+# Vagrant Box
+# ------------------------------------------------------
+# Configure the vagrant box to use with station
+#
+# A good option for customizing a box for station
+# is using laravel/settler: https://github.com/laravel/settler
+box: laravel/homestead
+
+# ------------------------------------------------------
+# VM Hostname
+# ------------------------------------------------------
+# Configure a custom hostname
+# for the vagrant environment
+hostname: station
+
+# ------------------------------------------------------
+# VM IP Address
+# ------------------------------------------------------
+# Bind a custom ip address to the virtual machine
+ip: "192.168.10.55"
+
+# ------------------------------------------------------
+# VM Memory Allocation
+# ------------------------------------------------------
+# Amount of memory to allocate
+# from the host environment
+memory: 1024
+
+# ------------------------------------------------------
+# VM CPU
+# ------------------------------------------------------
+# Number of CPU's to allocate
+# from the host environment
+cpus: 1
+
+# ------------------------------------------------------
+# VM Port Forwarding
+# ------------------------------------------------------
+# Forward ports to the host machine
+# to allow access from localhost (127.0.0.1)
+forwarded_ports:
+  ssh: 2222
+  http: 8086
+  https: 8443
+  mysql: 3306
+  postgresql: 5432
+
+# ------------------------------------------------------
+# SSH Config
+# ------------------------------------------------------
+# Pass ssh public and private keys
+# from the host machine to the vm
+ssh:
+  authorize: ~/.ssh/id_rsa.pub
+  keys:
+    - ~/.ssh/id_rsa
+
+# ------------------------------------------------------
+# Set git configuration for the vagrant environment
+# ------------------------------------------------------
+
+# Set the path to your hosts/user .gitconfig
+git-config: ~/.gitconfig
+
+# Set config for the environment manually
+# Visit http://git-scm.com/book/zh/v2/Customizing-Git-Git-Configuration
+# for git config options
+#git-config:
+#    user.name: "Your Name"
+#    user.email: you@yourdomain.com
+#    # colors.ui: "true"
+#    # push.default: simple
+
+# ------------------------------------------------------
+# Commands
+# ------------------------------------------------------
+commands:
+  # update box time
+  - 'sudo ntpdate ntp.ubuntu.com'
+  # remove hhvm to fix error with yosemite
+  - 'sudo update-rc.d -f hhvm remove'
+  # Add swap file
+  - 'sudo /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024'
+  - 'sudo chmod 0600 /var/swap.1'
+  - 'sudo /sbin/mkswap /var/swap.1'
+  - 'sudo /sbin/swapon /var/swap.1'
+
+# ------------------------------------------------------
+# AWS CLI
+# ------------------------------------------------------
+aws:
+  install: true
+  profiles:
+    - name: default
+      access_key: N/A
+      access_secret: N/A
+
+# ------------------------------------------------------
+# Elastic Beanstalk
+# ------------------------------------------------------
+elastic-beanstalk:
+  install: true
+
+# ------------------------------------------------------
+# Folder Mapping
+# ------------------------------------------------------
+# Map folders to specific locations
+folders:
+  - map: ./
+    to: /var/www
+    type: nfs
+
+# ------------------------------------------------------
+# Global Variables
+# ------------------------------------------------------
+variables:
+  APP_ENV: local
+
+mysql:
+  databases:
+    - name: wp_starter
+      drop: false
+
+# ------------------------------------------------------
+# Shell Aliases
+# ------------------------------------------------------
+source-aliases:
+  update-time: "sudo ntpdate ntp.ubuntu.com"
+
+# ------------------------------------------------------
+# Site Configuration
+# ------------------------------------------------------
+sites:
+  # Main UI site
+  - map: local.wp-starter.com
+    to: /var/www/public
+    root: /var/www
+    ssl: false
+    xdebug:
+      idekey: wp-starter
+    variables:
+      DB_NAME: 'wp_starter'
+      DB_USER: 'root'
+      DB_PASSWORD: 'secret'
+      DB_HOST: 'localhost'

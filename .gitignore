@@ -1,11 +1,14 @@
 ## Local OS files
 .DS_Store
+.idea
 
 ## Composer
 composer.lock
 
 ## Folders
 vendor
-vendor/*
 public/wp
-public/wp/*
+
+
+# Hide vagrant folder
+.vagrant
