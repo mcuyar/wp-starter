@@ -1,6 +1,7 @@
 <?php
 
 use Services\Url;
+use Services\Env;
 
 return [
 
@@ -9,11 +10,11 @@ return [
 	| Wordpress Database Parameters
 	|--------------------------------------------------------------------------
 	*/
-    'DB_NAME' => getenv('DB_NAME'),
-    'DB_USER' =>  getenv('DB_USER'),
-    'DB_PASSWORD' => getenv('DB_PASSWORD'),
-    'DB_HOST' => getenv('DB_HOST'),
-    'DB_PREFIX' => 'xBa3_',
+    'DB_NAME' => Env::get('DB_NAME', 'wp_starter'),
+    'DB_USER' =>  Env::get('DB_USER', 'root'),
+    'DB_PASSWORD' => Env::get('DB_PASSWORD', 'secret'),
+    'DB_HOST' => Env::get('DB_HOST', 'localhost'),
+    'DB_PREFIX' => Env::get('DB_PREFIX', 'xBa3_'),
     'DB_CHARSET' => 'utf8', // You almost certainly do not want to change this
     'DB_COLLATE' => '', // You almost certainly do not want to change this
 
