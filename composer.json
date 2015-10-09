@@ -19,7 +19,7 @@
     "autoload": {
       "classmap": [],
       "psr-4": {
-        "Services\\": "app/Services",
+        "Support\\": "app/Support",
         "Foundation\\": "app/Foundation"
       }
     },
