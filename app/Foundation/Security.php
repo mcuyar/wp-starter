@@ -1,8 +1,8 @@
 <?php namespace Foundation;
 
-use Support\Base\Options;
+use Support\Config\AbstractFactory;
 
-class Security extends Options {
+class Security extends AbstractFactory {
 
     /**
      * Run the links filter
@@ -38,31 +38,6 @@ class Security extends Options {
      * @var bool
      */
     public $file_editor = true;
-
-    /**
-     * Secure the wordpress site
-     *
-     * @param array $options
-     */
-    public static function secure(array $options = [])
-    {
-        $instance = new static($options);
-        $instance->filter();
-    }
-
-    /**
-     * return a filtered array
-     *
-     * @return array
-     */
-    protected function filter()
-    {
-        $filtered = array_filter($this->publicProperties());
-
-        foreach(array_keys($filtered) as $filter => $value) {
-            $this->{$filter}($value);
-        }
-    }
 
     /**
      * Remove uneeded links from the various places in Wordpress

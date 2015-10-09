@@ -1,45 +1,90 @@
 <?php namespace Foundation;
 
-class App {
+use Support\Config\AbstractFactory;
+use Support\Url;
+
+class App extends AbstractFactory {
 
     /**
-     * The Application Instance
+     * Wordpress Database Parameters
      *
-     * @var \Foundation\App
+     * @var array
      */
-    private static $instance = null;
+    public $database = [];
 
     /**
-     * The Config Instance
+     * Wordpress Memory Limits
      *
-     * @var Config
+     * @var array
      */
-    protected $config;
+    public $memory_limits = [];
 
     /**
-     * Instantiate the Application Instance
+     * Wordpress Debug
      *
-     * @param Config $config
+     * @var bool
      */
-    private function __construct(Config $config)
-    {
-        $this->config = $config;
-    }
+    public $debug = false;
 
     /**
-     * Call this method to get singleton
+     * Application Cache
      *
-     * @return \Foundation\App
+     * @var array
      */
-    public static function instance()
-    {
-        if (is_null(static::$instance)) {
-            $params = include(__DIR__ .'/../config/app.php');
-            static::$instance = new static(new Config($params));
-        }
+    public $cache = [];
 
-        return static::$instance;
-    }
+    /**
+     * Language
+     *
+     * @var array
+     */
+    public $language = '';
+
+    /**
+     * Secure Salts
+     *
+     * @var array
+     */
+    public $salts = [];
+
+    /**
+     * SSL Security Options
+     *
+     * @var array
+     */
+    public $ssl = [];
+
+    /**
+     * Theme Options
+     *
+     * @var array
+     */
+    public $theme = [];
+
+    /**
+     * MulitSite Plugin Directory
+     *
+     * @var array
+     */
+    public $multisite = [];
+
+    /**
+     * Customization Options
+     *
+     * @var array
+     */
+    public $custom = [];
+
+    /**
+     * Cookie Management
+     *
+     * @var array
+     */
+    public $cookie_management = [];
+
+    public $app_directory;
+
+    public $content_directory;
 
     /**
      * Get the current app environment
@@ -52,50 +97,143 @@ class App {
     }
 
     /**
-     * The config instance
+     * Set the database configs
      *
-     * @return Config
+     * @param array $config
      */
-    public static function config()
+    protected function database(array $config)
     {
-        return static::instance()->config;
-    }
-
-    public static function init()
-    {
-        $config = static::config();
-
-        foreach($config->params() as $constant => $value) {
-            if(!is_null($value)) {
-                $config->define($constant, $value);
-            }
-        }
+        $this->define($config);
     }
 
     /**
-     * Hide server errors and debug
+     * Set the memory limits
+     *
+     * @param array $config
      */
-    public static function hideErrors()
+    protected function memoryLimits(array $config)
     {
-        $config = static::config();
-
-        ini_set('display_errors', 0);
-        $config->define('SAVEQUERIES', false);
-        $config->define('WP_DEBUG', false);
-        $config->define('WP_DEBUG_DISPLAY', true);
+        $this->define($config);
     }
 
     /**
-     * Show server errors and debug errors
+     * Set to debug mode
+     *
+     * @param $bool
      */
-    public static function showErrors()
+    protected function debug($bool)
     {
-        $config = static::config();
+        $bool = ($bool === true);
 
-        ini_set('display_errors', 1);
-        $config->define('SAVEQUERIES', true);
-        $config->define('WP_DEBUG', true);
-        $config->define('WP_DEBUG_DISPLAY', true);
+        ini_set('display_errors', (int) $bool);
+        $this->define([
+            'SAVEQUERIES' => $bool,
+            'WP_DEBUG' => $bool,
+            'WP_DEBUG_DISPLAY' => $bool
+        ]);
     }
 
+    /**
+     * Use Cache?
+     *
+     * @param $bool
+     */
+    protected function cache($bool)
+    {
+        $this->define('WP_CACHE', $bool === true);
+    }
+
+    /**
+     * Set the app language
+     *
+     * @param $lang
+     */
+    protected function language($lang)
+    {
+        $this->define('WPLANG', $lang);
+    }
+
+    /**
+     * Set the salt keys
+     *
+     * @param array $config
+     */
+    protected function salts(array $config)
+    {
+        $this->define($config);
+    }
+
+    /**
+     * Set ssl login and admin
+     *
+     * @param array $config
+     */
+    protected function ssl(array $config)
+    {
+        $this->define($config);
+    }
+
+    /**
+     * Set the default theme
+     *
+     * @param array $config
+     */
+    protected function theme(array $config)
+    {
+        $this->define($config);
+    }
+
+    /**
+     * Set multi site options
+     *
+     * @param array $config
+     */
+    protected function multisite(array $config)
+    {
+        $this->define($config);
+    }
+
+    /**
+     * Set custom configs
+     *
+     * @param array $config
+     */
+    protected function custom(array $config)
+    {
+        $this->define($config);
+    }
+
+    /**
+     * Set cookie options
+     *
+     * @param array $config
+     */
+    protected function cookieManagement(array $config)
+    {
+        $this->define($config);
+    }
+
+    /**
+     * Set the absolute path to wordpress
+     *
+     * @param string $path
+     */
+    protected function appDirectory($path)
+    {
+        $this->define('ABSPATH', realpath($path));
+    }
+
+    /**
+     * Set the path to wordpress
+     * content directory
+     *
+     * @param string $path
+     */
+    protected function contentDirectory($path)
+    {
+        $path = realpath($path);
+
+        $this->define( 'WP_CONTENT_DIR', $path);
+        $this->define( 'WP_CONTENT_URL', Url::to(basename($path)));
+    }
 }
